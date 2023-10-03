@@ -1,9 +1,31 @@
 #!/usr/bin/env bash
 
 DOTFILES=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+OSNAME=$(uname)
 
-rm -rf $HOME/.config/kitty
-ln -s $DOTFILES/kitty $HOME/.config/kitty
+
+
+
+echo "Setting up OS specific configs..."
+
+case "$OSNAME" in
+  "Darwin" ) 
+          echo "OS is MacOS. Applying settings."
+          if test -d "/Applications/iTerm.app"; then
+             echo "Setting up iTerm2 preferences..."
+          
+             # Specify preferences dir
+             defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$DOTFILES/iterm"
+             # Tell iTerm2 to ose the custom preferences in the dir
+             defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
+          fi
+          ;;
+  "Linux" )
+          echo "OS is Linux. Applying Settings."
+          rm -rf $HOME/.config/kitty
+          ln -s $DOTFILES/kitty $HOME/.config/kitty
+          ;;
+esac
 
 rm -rf $HOME/.tmux.conf
 ln -s $DOTFILES/tmux/tmux.conf $HOME/.tmux.conf
@@ -16,5 +38,3 @@ ln -s $DOTFILES/scripts/t $HOME/.local/bin/t
 rm -rf $HOME/.config/nvim
 ln -s $DOTFILES/nvim $HOME/.config/nvim
 
-rm -rf $HOME/.config/phpactor
-ln -s $DOTFILES/phpactor $HOME/.config/phpactor
