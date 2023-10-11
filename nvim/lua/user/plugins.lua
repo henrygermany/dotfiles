@@ -30,7 +30,7 @@ use('wbthomason/packer.nvim')
 
 -- Catppuccin Theme
 use {
-  "catppuccin/nvim", as = "catppuccin", 
+  "catppuccin/nvim", as = "catppuccin",
   config = function()
     vim.cmd('colorscheme catppuccin-frappe')
 
