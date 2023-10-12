@@ -40,3 +40,9 @@ vim.keymap.set('n', '<A-k>', ':move .-2<CR>==')
 vim.keymap.set('v', '<A-j>', ":move '>+1<CR>gv=gv")
 vim.keymap.set('v', '<A-k>', ":move '<-2<CR>gv=gv")
 
+
+vim.keymap.set('n', '<C-k>', ":lua require('dap').toggle_breakpoint()<CR>")
+vim.keymap.set('n', '<C-c>', ":lua require('dap').continue()<CR>")
+vim.keymap.set('n', '<C-n>', ":lua require('dap').step_over()<CR>")
+vim.keymap.set('n', '<C-t>', ":lua require('dap').step_into()<CR>")
+vim.keymap.set('n', '<C-p>', ":lua require('dap').step_out()<CR>")

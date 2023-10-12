@@ -1,12 +1,18 @@
 -- PHP
-require('lspconfig').intelephense.setup({})
+require('lspconfig').phpactor.setup({
+    on_attach = on_attach,
+    init_options = {
+      ["language_server_phpstan.enabled"] = false,
+      ["language_server_psalm.enabled"] = false,
+    }
+  })
 
 -- Vue, JavaScript, TypeScript
 require('lspconfig').volar.setup({
   capabilities = capabilities,
   -- Enable "Take Over Mode" where volar will provide all JS/TS LSP services
   -- This drastically improves the responsiveness of diagnostic updates on change
-  filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+  filetypes = { 'typescript', 'javascript' },
 })
 
 -- Tailwind CSS

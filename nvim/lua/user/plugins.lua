@@ -259,7 +259,38 @@ use({
   end,
 })
 
+-- DAP
+use({
+    'mfussenegger/nvim-dap',
+    config = function()
+      dap = require('dap')
+      dap.adapters.php = {
+        type = 'executable',
+        command = 'node',
+        args = { "/home/student/tmp/vscode-php-debug/out/phpDebug.js" },
+      }
 
+      dap.configurations.php = {
+        {
+          type = "php",
+          request = "launch",
+          name = "Listen for Xdebug",
+          port = 9003,
+          pathMappings = {
+            ["/var/www/html"] = "${workspaceFolder}"
+          }
+        }
+      }
+    end,
+})
+
+-- DAP UI
+use({ "rcarriga/nvim-dap-ui", 
+  requires = {"mfussenegger/nvim-dap"},
+  config = function()
+    require('dapui').setup()
+  end,
+})
 
 vim.cmd([[
   augroup packer_user_config
