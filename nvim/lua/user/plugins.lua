@@ -253,17 +253,28 @@ use({
   'neovim/nvim-lspconfig',
   requires = {
     'b0o/schemastore.nvim',
+    "folke/neodev.nvim",
+    "folke/trouble.nvim",
+     "RRethy/vim-illuminate",
+     "williamboman/mason-lspconfig.nvim",
+     { "williamboman/mason.nvim" },
   },
+  event = "BufReadPre",
   config = function()
     require('user/plugins/lspconfig')
   end,
+})
+
+-- Tagbar
+use({
+    'preservim/tagbar',
 })
 
 -- DAP
 use({
     'mfussenegger/nvim-dap',
     config = function()
-      dap = require('dap')
+      local dap = require('dap')
       dap.adapters.php = {
         type = 'executable',
         command = 'node',
@@ -284,8 +295,36 @@ use({
     end,
 })
 
+use({
+    'ms-jpq/coq_nvim',
+    config = function()
+      vim.g.coq_settings = {
+        auto_start = true;
+      }
+    end
+  })
+
+use({
+    "adalessa/laravel.nvim",
+    requires = {
+    "nvim-telescope/telescope.nvim",
+    "tpope/vim-dotenv",
+    "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require('laravel').setup({
+          environment = {
+            resolver = require "laravel.environment.resolver"(false, true, "docker-compose"),
+            environments = {
+              ["docker-compose"] = require("laravel.environment.docker_compose").setup({container_name = "php"}),
+            }
+          }
+        })
+      require('telescope').load_extension "laravel"
+    end
+})
 -- DAP UI
-use({ "rcarriga/nvim-dap-ui", 
+use({ "rcarriga/nvim-dap-ui",
   requires = {"mfussenegger/nvim-dap"},
   config = function()
     require('dapui').setup()

@@ -1,35 +1,45 @@
--- PHP
-require('lspconfig').phpactor.setup({
-    on_attach = on_attach,
-    init_options = {
-      ["language_server_phpstan.enabled"] = false,
-      ["language_server_psalm.enabled"] = false,
-    }
-  })
+require("neodev").setup()
+local lspconfig = require("lspconfig")
+require("mason").setup()
+local mason_lspconfig = require("mason-lspconfig")
 
--- Vue, JavaScript, TypeScript
-require('lspconfig').volar.setup({
-  capabilities = capabilities,
-  -- Enable "Take Over Mode" where volar will provide all JS/TS LSP services
-  -- This drastically improves the responsiveness of diagnostic updates on change
-  filetypes = { 'typescript', 'javascript' },
+local lsp_conf = require("user/lsp_settings")
+
+local servers = {
+    cssls = lsp_conf.css,
+    lua_ls = lsp_conf.lua,
+    yamlls = lsp_conf.yaml,
+    tsserver = lsp_conf.ts,
+    html = { filetypes = { "html"} },
+}
+
+mason_lspconfig.setup({
+    ensure_installed = vim.tbl_keys(servers),
 })
 
--- Tailwind CSS
+mason_lspconfig.setup_handlers({
+    function(server_name)
+        lspconfig[server_name].setup({
+            -- autostart coq
+            require("coq").lsp_ensure_capabilities(),
+            -- on_attach = lsp_conf.on_attach,
+            -- capabilities = lsp_conf.capabilities,
+            settings = servers[server_name],
+            filetypes = (servers[server_name] or {}).filetypes,
+        })
+    end,
+})
 
--- JSON
-require('lspconfig').jsonls.setup({
-  capabilities = capabilities,
-  settings = {
-    json = {
-      schemas = require('schemastore').json.schemas(),
+-- highlight same words across file
+require("illuminate").configure({
+    delay = 200,
+    large_file_cutoff = 2000,
+    large_file_overrides = {
+        providers = { "lsp" },
     },
-  },
 })
 
-require('lspconfig').jdtls.setup{}
-
--- Keymaps
+-- lsp_conf.setup()-- Keymaps
 vim.keymap.set('n', '<Leader>d', '<cmd>lua vim.diagnostic.open_float()<CR>')
 vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
 vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
